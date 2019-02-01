@@ -1,0 +1,16 @@
+{
+    "development":{
+        "username": "root",
+        "password": "darksissy",
+        "database": "mariaDB",
+        "host": "localhost",
+        "dialect": "mysql"
+    },
+    "staging":{
+        "username": "root",
+        "password": "",
+        "database": "casandrodb",
+        "host": "localhost",
+        "dialect": "mysql"
+    }
+}

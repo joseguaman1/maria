@@ -1,0 +1,57 @@
+<!--<script src="/js/slider.js"></script>-->
+<script src="/js/jquery.flexslider-min.js"></script>
+<script>
+    
+    function agergarCarrito(external) {
+        var url = 'http://localhost:666/maria/compra/carrito/' + external;
+        $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data, textStatus, jqXHR) {
+                refrescar();
+                
+            }, error: function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+            }
+        });
+    }
+</script>
+<article class="box post">
+
+    <header>
+        <h2>Esta pagina muestra <strong>los mejores vinos!!!</strong> <br />
+            Disfrutala... <%= rol %> <%= admin %>...</h2>
+        <!--<div id="slider-1" data-aspect-ratio="16:9"></div>-->
+        <div class="flex-container">
+            <div class="flexslider">
+                <ul class="slides">
+                    <% lista.forEach(function(vino, i) { %>
+
+                    <li>
+                        <img src="/img/<%= vino.foto %>" width="75"/>
+                        <p><%= vino.nombre %> <%= vino.marca.nombre %></p>
+                        <a id="<%= i %>_a" href="#" class="btn btn-danger">Agregar a carrito</a>
+                        <script>
+                            $("#<%= i %>_a").click(function () {
+                                agergarCarrito("<%= vino.external_id %>");
+                            });
+                        </script>
+                    </li>
+                    <% }); %>
+                </ul>
+            </div>
+        </div>
+
+    </header>
+
+</article>
+<script>
+    $(document).ready(function () {
+        $('.flexslider').flexslider({
+            animation: 'fade',
+            controlsContainer: '.flexslider'
+        });
+    });</script>
+
+

@@ -1,0 +1,64 @@
+<script>
+    function mostrar() {
+        var url = 'http://localhost:666/maria/compra/carrito/listado';
+        $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data, textStatus, jqXHR) {
+                var html = "";
+                var subtotal = 0;
+                var iva = 0;
+                var total = 0;                
+                $.each(data, function(i, item){
+                    html += '<tr>';
+                    html += '<td>'+(i+1)+'</td>';
+                    html += '<td><a id="a_'+i+'" href="#" class="btn btn-success btn-sm"> + </a>  '+item.cant+'  <a id="q_'+i+'" href="#" class="btn btn-danger btn-sm"> - </a></td>';
+                    html += '<td>'+item.marca +' '+item.nombre+'</td>';
+                    html += '<td>'+item.pu+'</td>';
+                    html += '<td>'+item.pt+'</td>';
+                    html += '</tr>';
+                    subtotal += item.pt;
+                });
+                subtotal = subtotal.toFixed(2);
+                var total = subtotal * 1.12;
+                var iva = total - subtotal;
+                total = total.toFixed(2);
+                iva = iva.toFixed(2);
+                html += '<tr><td colspan="4" style="text-align: right">SUBTOTAL: </td>';
+                html += '<td>$ '+subtotal+'</td></tr>';
+                html += '<tr><td colspan="4" style="text-align: right">IVA: </td>';
+                html += '<td>$ '+iva+'</td></tr>';
+                html += '<tr><td colspan="4" style="text-align: right">TOTAL: </td>';
+                html += '<td>$ '+total+'</td></tr>';
+                $("#tabla tbody").html(html);
+            }, error: function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+            }
+        });
+    }   
+    $(document).ready(function (){
+        mostrar();
+    });
+</script>
+<header>
+    <h2><%= titulo %></h2>
+</header>
+<div class="box">
+    <div class="row">
+        <table id="tabla">
+            <thead>
+                <tr>
+                    <th>Nro</th>
+                    <th>Cant</th>
+                    <th>Descripcion</th>
+                    <th>PU</th>
+                    <th>PT</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+</div>
