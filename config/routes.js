@@ -104,9 +104,13 @@ app.post('/maria/administrar/vino/foto/subir',  vinoController.guardarImagen);
 //carrito
 
 app.get('/maria/compra/carrito/listado', auth,  carrito.mostrarCarrito);
+app.get('/maria/compra/carrito/quitar/:external', auth,  carrito.quitar_item);
+app.get('/maria/compra/carrito/agregar/:external', auth,  carrito.agregar_item);
 app.get('/maria/compra/carrito/:external', auth,  carrito.cargarCarro);
+
 //venta
 app.get('/maria/venta', auth,  ventaController.mostrarVenta);
+app.post('/maria/venta/guardar', auth,  ventaController.guardar);
 
 //    app.get('/login', home.login);
 //    app.get('/signup', home.signup);

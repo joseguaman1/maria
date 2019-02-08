@@ -10,15 +10,69 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
         <link rel="stylesheet" href="/assets/css/main.css" />
-        
+        <script src="/assets/js/jquery.min.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase.js"></script>
+        <script>
+            // Initialize Firebase
+            var config = {
+                apiKey: "AIzaSyCijlIzb3eLEes_sqd7DGIbFrdY754M0d0",
+                authDomain: "vinos-2889e.firebaseapp.com",
+                databaseURL: "https://vinos-2889e.firebaseio.com",
+                projectId: "vinos-2889e",
+                storageBucket: "vinos-2889e.appspot.com",
+                messagingSenderId: "687912616285"
+            };
+            firebase.initializeApp(config);
+            //----------------------- firebase messaging ---------------------//
+            var messaging = firebase.messaging();
+            //depende de los proyectos
+            messaging.usePublicVapidKey("BKs3emgISn8pQwZW8dbVx10HDLUIgGHAjZTSQf-7XwBnDJgg6oPKcwKMa9ndJ6-jH1_YHNBJadviprMp5ZJJCfA");
+            messaging.requestPermission().then(function () {
+                console.log('Notification permission granted.');
+                messaging.getToken().then(function (currentToken) {
+                    if (currentToken) {
+                        console.log(currentToken);
+                        //Guardar token
+                    } else {
+                        console.log('No Instance ID token available. Request permission to generate one.');
+
+                    }
+                }).catch(function (err) {
+                    console.log('An error occurred while retrieving token. ', err);
+                    showToken('Error retrieving Instance ID token. ', err);
+                    setTokenSentToServer(false);
+                });
+                // ...
+            }).catch(function (err) {
+                console.log('Unable to get permission to notify.', err);
+            });
+            messaging.onMessage(function (payload) {             
+                appendMessage(payload);
+            });
+
+            function appendMessage(payload) {
+                console.log(payload);
+                var notificaacion = '<div class="alert alert-warning alert-dismissible fade show" role="alert">';
+                notificaacion += '<button type="button" class="close" data-dismiss="alert" aria-label="Close">';
+                notificaacion += '<span aria-hidden="true">&times;</span>';
+                notificaacion += '</button>';
+                notificaacion += '<img src="'+payload.notification.icon+'" width="25"/><strong>'+payload.notification.title+'</strong> '
+                        +payload.notification.body+'.';
+                notificaacion += '</div>'; 
+                $("#messages").html(notificaacion);                      
+
+            }
+        </script>
+
         <!--===============================================================================================-->
         <link rel="stylesheet" type="text/css" href="/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" type="text/css" href="/vendor/bootstrap/css/bootstrap.min.css">
-                <script src="/assets/js/jquery.min.js"></script>
+
         <script src="/javascripts/jquery.validate.min.js"></script>        
         <script src="/vendor/bootstrap/js/popper.js"></script>
         <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
-        
+
+
     </head>
     <body class="is-preload">
         <div id="page-wrapper">
@@ -47,18 +101,18 @@
                                 </li>
                             </ul>
                         </li>-->
-                      
-                            <li><a href="/maria/inicio_sesion" class="button">Inicio de sesion</a></li>
-                      
+
+                        <li><a href="/maria/inicio_sesion" class="button">Inicio de sesion</a></li>
+
                     </ul>
                 </nav>
             </header>
-
+            <div id="messages"></div>
             <!-- Main -->
             <section id="main" class="container">
-                
+
                 <%- include('fragmentos/frm_principal') %>
-                
+
             </section>
 
             <!-- Footer -->

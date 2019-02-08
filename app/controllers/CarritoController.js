@@ -15,7 +15,7 @@ class CarritoController {
         Vino.findOne({where: {external_id: external}, include: {model: Marca}}).then(function (vino) {
             var pos = CarritoController.verificar(carrito, external);
             if (pos == -1) {
-                var data = {external: external, nombre: vino.nombre, marca: vino.marca.nombre, cant: 1, pu: vino.precio, pt: vino.precio};
+                var data = {external: external, nombre: vino.nombre, marca: vino.marca.nombre, cant: 1, pu: vino.precio, pt: vino.precio, id: vino.id};
                 carrito.push(data);
                 console.log(req.session.carrito);
             } else {
@@ -64,6 +64,18 @@ class CarritoController {
             req.session.carrito = aux;
             res.status(200).json(req.session.carrito);
         }
+    }
+    
+    agregar_item(req, res) {
+        var carrito = req.session.carrito;
+        var external = req.params.external;
+        var pos = CarritoController.verificar(carrito, external);
+        var data = carrito[pos];
+        data.cant = data.cant + 1;
+        data.pt = data.cant * data.pu;
+        carrito[pos] = data;
+        req.session.carrito = carrito;
+        res.status(200).json(req.session.carrito);
     }
 
 }
