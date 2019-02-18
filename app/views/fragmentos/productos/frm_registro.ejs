@@ -1,0 +1,127 @@
+<script src="/javascripts/jquery_validation.js"></script>
+<script>
+    var t = jQuery.noConflict();
+
+    t().ready(function () {
+        cargarProvincias();
+        cargarCantones();
+        // validate signup form on keyup and submit
+        t("#formulario").validate({
+            rules: {
+                nombre: {
+                    required: true,
+                    minlength: 3
+                },
+                fecha: {
+                    required: true,
+                    date: true
+                },
+                marca: {required: true},
+                pais: {required: true},
+                cantidad: {
+                    required: true,
+                    digits: true
+                },
+                precio: {
+                    required: true,
+                    number: true
+                }
+
+            },
+            messages: {
+                nombre: {
+                    required: "Ingrese el nombre del vino",
+                    minlength: "Minimo 2 caracteres"
+                }
+            }
+        });
+    });
+
+    function cargarProvincias() {
+        var url = "http://localhost:666/test/sw/provincias";
+        t.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'JSON',
+            success: function (data, textStatus, jqXHR) {
+                console.log(data);                
+                console.log(data.provincias);
+                var html = "<option value=''>Seleccione una provincia</option>";
+                t.each(data.provincias, function (i, item) {
+                    html += '<option value = "' + item + '">' + item + '</option>';
+                });
+                t("#provincia").html(html);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+
+            }
+        });
+    }
+    function cargarCantones() {
+        t("#provincia").change(function () {            
+            t("#cantones").html("");
+            var prov = t("#provincia").val();
+            var url = "http://localhost:666/test/sw/cantones";            
+            t.ajax({
+                url: url,
+                type: 'GET',
+                data: 'ciudad=' + prov,
+                dataType: 'JSON',
+                success: function (data, textStatus, jqXHR) {                    
+                    console.log(data);
+                    var html = "";                    
+                    t.each(data, function (i, item) {
+                        html += '<option value = "' + item + '">' + item + '</option>';
+                    });
+                    t("#cantones").html(html);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR.responseText);
+                }
+            });
+        });    
+    }
+</script>
+<header>
+    <h2><%= titulo %></h2>
+</header>
+<div class="box">
+    <div class="row">
+        <%- locals.flash %>
+        <div class="card">
+            <div class="card-header">
+
+            </div>
+            <div class="card-body">
+                <form id="formulario" method="POST" action="/test/producto/guardar">
+                    <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" aria-describedby="marcaHelp" placeholder="Ingrese el nombre">
+                        <small id="marcaHelp" class="form-text text-muted">Nombre.</small>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="provincia">Provinica</label>
+                        <select name="provincia" id="provincia">                            
+                        </select>
+                        <small id="tipoHelp" class="form-text text-muted">Provincia.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cantones">Cantones</label>
+                        <select name="cantones" id="cantones">
+
+                        </select>
+                        <small id="marcaHelp" class="form-text text-muted">Cantones.</small>
+                    </div>
+
+                    <div class="modal-footer">
+                        <a href="/maria/administrar/vino" class="btn btn-danger">Cancelar</a>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

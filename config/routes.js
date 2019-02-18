@@ -18,7 +18,13 @@ var carrito = new carro();
 var venta = require('../app/controllers/VentaController');
 var ventaController = new venta();
 
+//PARA TEST
 
+var sw = require('../app/controllers/SW');
+var SW = new sw();
+
+var prod = require('../app/controllers/ProductoController');
+var Prod = new prod();
 
 module.exports = function (app) {
     var auth = function middleWare(req, res, next) {
@@ -112,6 +118,21 @@ app.get('/maria/compra/carrito/:external', auth,  carrito.cargarCarro);
 app.get('/maria/venta', auth,  ventaController.mostrarVenta);
 app.post('/maria/venta/guardar', auth,  ventaController.guardar);
 
+//TESTS
+//Servicio web
+app.get('/test/sw/provincias', SW.obtenerProvincias);
+app.get('/test/sw/cantones', SW.obtenerCantones);
+app.get('/test/sw/listaProdTod', SW.obtenerListaTodos);
+app.get('/test/sw/listaProdLot', SW.obtenerListaTodosLotes);
+app.get('/test/sw/cantLotes', SW.obtenerCantLotes);
+app.get('/test/sw/cantProd/:codigo', SW.obtenerCantProducto);
+//producto
+app.get('/test/producto/lista', Prod.listar);
+app.get('/test/producto/registrar', Prod.registrar);
+app.post('/test/producto/guardar', Prod.guardar);
+//lote
+app.get('/test/lote/registrar', Prod.registrarLote);
+app.post('/test/lote/guardar', Prod.guardarLote);
 //    app.get('/login', home.login);
 //    app.get('/signup', home.signup);
 //

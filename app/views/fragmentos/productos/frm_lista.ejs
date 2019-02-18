@@ -1,0 +1,100 @@
+<script>
+    var t = jQuery.noConflict();
+
+    t().ready(function () {
+        cargarTabla();
+        
+    });
+    
+    function cargarTabla() {            
+            var url = "http://localhost:666/test/sw/listaProdTod";       ///test/sw/listaProdLot     
+            t.ajax({
+                url: url,
+                type: 'GET',                
+                dataType: 'JSON',
+                success: function (data, textStatus, jqXHR) {                    
+                    console.log(data);
+                    var html = "";                    
+                    t.each(data, function (i, item) {
+                        html += '<tr>';
+                        html += '<td>'+(i+1)+'</td>';
+                        html += '<td>'+item.nombre+'</td>';
+                        html += '<td>'+item.provinvia+'</td>';
+                        html += '<td>'+item.canton+'</td>';
+                        html += '<td><button onclick="return verLotes('+item.id+')" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Ver cantidad de productos</button></td>';
+                        html += '</tr>';
+                    });
+                    t("#tabla tbody").html(html);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR.responseText);
+                }
+            });
+    }
+    function verLotes(id) {
+        var url = "http://localhost:666/test/sw/cantProd/"+id;       ///test/sw/listaProdLot     
+            t.ajax({
+                url: url,
+                type: 'GET',                
+                dataType: 'JSON',
+                success: function (data, textStatus, jqXHR) {
+                    console.log(data);
+                    if(data.cantidad != null) {
+                        t("#cantP").html(data.cantidad);
+                    } else {
+                        t("#cantP").html("0");
+                    }
+                    
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR.responseText);
+                }
+            });
+    }
+    
+</script>
+<header style="margin-bottom: 50px">
+    <h2><%= titulo %></h2>
+</header>
+<div class="box">
+    <!-- Button trigger modal -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Informacion de lotes</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <span>La cantidad de productos es: <b><span id="cantP">0</span></b></span>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="row" style="margin-bottom: 55px;">
+        <a href="/test/producto/registrar" class="button">Nuevo Producto</a>
+        <a href="/test/lote/registrar" class="button alert-success">Nuevo Lote</a>
+    </div>
+    <div class="row">
+        <%- locals.flash %>
+        <table id="tabla" class="table">
+            <thead>
+                <tr>
+                    <th>Nro</th><th>Nombre</th><th>Provincia</th><th>Pais</th><th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+    </div>
+</div>
